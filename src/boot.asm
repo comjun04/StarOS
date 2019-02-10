@@ -44,11 +44,32 @@ call print_string_nl
 mov bx, GOODBYE_MSG
 call print_string_nl
 
+; disk read
+mov [BOOT_DRIVE], dl
+
+mov bp, 0x8000
+mov sp, bp
+
+mov bx, 0x9000
+mov dh, 5
+mov dl, [BOOT_DRIVE]
+call disk_load
+
+mov dx, [0x9000]
+call print_hex
+
+call print_nl
+
+mov dx, [0x9000 + 512]
+call print_hex
+
 ; hang
 jmp $
 
 ; include
 %include "print_rm.asm" ; Real Mode Print
+%include "print_hex_rm.asm" ; Real Mode Hex Print
+%include "disk_load_rm.asm" ; Real Mode Disk Load
 
 ; Data
 HELLO_MSG:
@@ -57,6 +78,12 @@ HELLO_MSG:
 GOODBYE_MSG:
 	db 'Goodbye!', 0
 
+BOOT_DRIVE: db 0
+
 ; magic number
 times 510-($-$$) db 0
 dw 0xaa55
+
+; furthermore storage
+times 256 dw 0xdada
+times 256 dw 0xface

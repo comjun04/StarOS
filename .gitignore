@@ -1,3 +1,4 @@
 ## StarOS Ignore File ##
 
 *.img
+src/test.asm
