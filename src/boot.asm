@@ -66,13 +66,37 @@ call print_nl
 mov dx, [0x9000 + 512]	      ; Also , print the first word from the
 call print_hex		      ; 2nd loaded sector : should be 0 xface
 
+call print_nl
+
+; switch to protected mode
+mov bp, 0x9000
+mov sp, bp
+
+mov bx, MSG_REAL_MODE
+call print_string_nl
+
+call switch_to_pm
+
+jmp $
+
+; BEGIN PROTECTED MODE
+[bits 32]
+BEGIN_PM:
+	mov ebx, MSG_PROT_MODE
+	call print_string_pm
+
 ; hang
 jmp $ 			    ; Jump to the current address ( i.e. forever ).
 
+[bits 16]
 ; include
 %include "print_rm.asm"       ; Real Mode Print
 %include "print_hex_rm.asm"   ; Real Mode Hex Print
 %include "disk_load_rm.asm"   ; Real Mode Disk Load
+
+%include "gdt.asm"
+%include "switch_to_pm.asm"
+%include "print_pm.asm"
 
 ; Data
 HELLO_MSG:
@@ -81,6 +105,9 @@ HELLO_MSG:
 
 GOODBYE_MSG:
 	db 'Goodbye!', 0
+
+MSG_REAL_MODE db "Started in 16-bit Real Mode", 0
+MSG_PROT_MODE db "Successfully landed in 32-bit Protected Mode", 0
 
 BOOT_DRIVE: db 0
 
