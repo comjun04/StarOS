@@ -2,9 +2,9 @@ print_nl:
 	pusha
 	
 	mov ah, 0x0e
-	mov al, 0x0a
+	mov al, 0x0a ; newline char
 	int 0x10
-	mov al, 0x0d
+	mov al, 0x0d ; carriage return
 	int 0x10
 	
 	popa
@@ -12,6 +12,10 @@ print_nl:
 
 print_string:
 	pusha
+	
+	; keep this in mind:
+	; while (string[i] != 0) { print string[i]; i++ }
+	; the comparison for string end (null byte)
 	jmp start_print
 
 print_string_nl:
@@ -20,13 +24,15 @@ print_string_nl:
 	ret
 
 start_print:
-	mov al, [bx]
+	mov al, [bx] ; 'bx' is the base address for the string
 	cmp al, 0
 	je done_print
 	
+	; the part where we print with the BIOS help
 	mov ah, 0x0e
-	int 0x10
+	int 0x10     ; 'al' already contains the char
 	
+	; increment pointer and do next loop
 	add bx, 1
 	jmp start_print
 
