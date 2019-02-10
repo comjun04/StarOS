@@ -46,23 +46,25 @@ mov bx, GOODBYE_MSG
 call print_string_nl
 
 ; disk read
-mov [BOOT_DRIVE], dl
+mov [BOOT_DRIVE], dl	      ; BIOS stores our boot drive in DL , so it ’s
+			      ; best to remember this for later.
 
-mov bp, 0x8000
-mov sp, bp
+mov bp, 0x8000		      ; Here we set our stack safely out of the
+mov sp, bp		      ; way , at 0 x8000
 
-mov bx, 0x9000
-mov dh, 5
+mov bx, 0x9000		      ; Load 5 sectors to 0 x0000 (ES ):0 x9000 (BX)
+mov dh, 5		      ; from the boot disk.
 mov dl, [BOOT_DRIVE]
 call disk_load
 
-mov dx, [0x9000]
-call print_hex
+mov dx, [0x9000]	      ; Print out the first loaded word , which
+call print_hex		      ; we expect to be 0xdada , stored
+			      ; at address 0 x9000
 
 call print_nl
 
-mov dx, [0x9000 + 512]
-call print_hex
+mov dx, [0x9000 + 512]	      ; Also , print the first word from the
+call print_hex		      ; 2nd loaded sector : should be 0 xface
 
 ; hang
 jmp $ 			    ; Jump to the current address ( i.e. forever ).
@@ -88,5 +90,9 @@ dw 0xaa55 	      	      ; Last two bytes form the magic number ,
 		      	      ; so BIOS knows we are a boot sector.
 
 ; furthermore storage
+; We know that BIOS will load only the first 512 - byte sector from the disk ,
+; so if we purposely add a few more sectors to our code by repeating some
+; familiar numbers , we can prove to ourselfs that we actually loaded those
+; additional two sectors from the disk we booted from.
 times 256 dw 0xdada
 times 256 dw 0xface
