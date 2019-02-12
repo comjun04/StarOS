@@ -1,14 +1,12 @@
-.SUFFIXES : .asm .bin
-
 AS = nasm
 
-all : 
+all : boot.bin kernel_entry.o
 
 %.bin : %.asm
-	$(AS) $< -f bin -o $@
+	nasm $< -f bin -o $@
+
+%.o : %.asm
+	nasm $< -f elf -o $@
 
 clean:
 	rm *.bin *.o
-
-kernel_entry.o : kernel_entry.asm
-	$(AS) $< -f elf -o $@

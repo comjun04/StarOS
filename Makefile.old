@@ -9,10 +9,10 @@ os-image : boot/boot_sect.bin kernel.bin
 	cat $^ > os-image.img
 
 kernel.bin : kernel/kernel_entry.o ${OBJ}
-	ld -o $@ -Ttext 0x1000 $^ --oformat binary
+	i686-elf-ld -o $@ -Ttext 0x1000 $^ --oformat binary
 
 %.o : %.c
-	gcc -ffreestanding -c $< -o $@
+	i686-elf-gcc -ffreestanding -c $< -o $@
 
 %.o : %.asm
 	nasm $< -f elf -o $@
