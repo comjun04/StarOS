@@ -1,10 +1,4 @@
-void some_function() {
+void kernel_main(void)
+{
 	
-}
-
-void main() {
-	char* video_memory = (char*) 0xb8000;
-	*video_memory = 'X';
-	
-	some_function();
 }

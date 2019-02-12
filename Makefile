@@ -5,3 +5,7 @@ boot:
 
 kernel:
 	cd kernel ; $(MAKE)
+
+clean:
+	cd boot ; $(MAKE) clean
+	cd kernel ; $(MAKE) clean
