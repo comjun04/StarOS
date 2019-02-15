@@ -5,4 +5,4 @@
 *.bin
 *.bak
 *.dis
-src/test.asm
+*.cbp
