@@ -1,4 +1,8 @@
 ## StarOS Ignore File ##
 
 *.img
-src/test.asm
+*.o
+*.bin
+*.bak
+*.dis
+*.cbp
